@@ -2,8 +2,10 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+#include "comandos.h"
 
 time_t t;
+nodoc *nodocomando;
 
 typedef struct p{
 
@@ -37,32 +39,59 @@ particion p4;
 
 
 void llamada(){
-char var;
 printf("Ingrese el comando indicado \n");
+int i=0;
 char cadena[200];
+char separador[]=" ";
 fgets(cadena,200,stdin);
-//printf("%s",cadena);
-
-char * pch;
-  pch = strtok (cadena," ,.-");
-  while (pch != NULL)
-  {
-
-  if(strcmp(pch,"mkdisk")){
-    break;
-  }else{
-   printf ("%s\n",pch);
-    pch = strtok (NULL, " ,.-");
-  }
-  }
+char *t=NULL;
+t= strtok(cadena,separador);
+while(t!=NULL){
+nodoc *nuevo= CrearComando(t);
+nodocomando= InsertarComando(nodocomando,nuevo);
+t = strtok( NULL, separador);
+}
+ImprimirComandos(nodocomando);
+nodoc *aux=nodocomando;
+while(aux!=NULL){
+if(strcasecmp(aux->comando,"mkdisk")==0){
+printf("ES UN COMANDO PARA CREAR UN DISCO DURO \n");
+DiscoDuro();
+}
+aux=aux->siguiente;
 }
 
+}
+
+char* substr(char* cadena, int comienzo, int longitud)
+{
+	if (longitud == 0) longitud = strlen(cadena)-comienzo-1;
+
+	char *nuevo = (char*)malloc(sizeof(char) * longitud);
+
+	strncpy(nuevo, cadena + comienzo, longitud);
+
+	return nuevo;
+}
+
+void DiscoDuro(){
+char comparador[40];
+nodoc *aux=nodocomando;
+while(aux!=NULL){
+strncpy(comparador,aux->comando,7);
+if(strcasecmp(comparador,"-size::")==0){
+printf("YO DOY EL TAMAÑO y es : %s",substr(aux->comando,7,sizeof(aux->comando)));
+printf("\n %d",atoi(substr(aux->comando,7,sizeof(aux->comando))));
+}
+aux=aux->siguiente;
+}
+}
 
 
 
 int main()
 {
-
+    nodocomando= IniciarListaComandos(nodocomando);
     llamada();
 
     return 0;
