@@ -75,16 +75,44 @@ char* substr(char* cadena, int comienzo, int longitud)
 }
 
 void DiscoDuro(){
+int td;
 char comparador[40];
+char nombreArchivo[50];
+char pathArchivo[80];
 nodoc *aux=nodocomando;
+//PRIMER WHILE PARA EL TAMAÑO
 while(aux!=NULL){
 strncpy(comparador,aux->comando,7);
 if(strcasecmp(comparador,"-size::")==0){
 printf("YO DOY EL TAMAÑO y es : %s",substr(aux->comando,7,sizeof(aux->comando)));
-printf("\n %d",atoi(substr(aux->comando,7,sizeof(aux->comando))));
+td=atoi(substr(aux->comando,7,sizeof(aux->comando)));
 }
 aux=aux->siguiente;
 }
+//WHILE PARA ENCONTRAR EL NOMBRE
+aux=nodocomando;
+while(aux!=NULL){
+strncpy(comparador,aux->comando,7);
+if(strcasecmp(comparador,"-name::")==0){
+printf("\n YO DOY EL NOMBRE y es : %s",substr(aux->comando,7,sizeof(aux->comando)));
+strcpy(nombreArchivo,substr(aux->comando,7,sizeof(aux->comando)));
+}
+aux=aux->siguiente;
+}
+
+//WHILE PARA ENCONTRAR LA PATH
+aux=nodocomando;
+while(aux!=NULL){
+strncpy(comparador,aux->comando,7);
+if(strcasecmp(comparador,"-path::")==0){
+printf("\n YO DOY LA PATH Y ES: %s",substr(aux->comando,7,sizeof(aux->comando)));
+strcpy(pathArchivo,substr(aux->comando,7,sizeof(aux->comando)));
+}
+aux=aux->siguiente;
+}
+
+printf("\n %d",td);
+printf("\n %s",nombreArchivo);
 }
 
 

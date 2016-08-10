@@ -31,8 +31,8 @@
 		<Compiler>
 			<Add option="-Wall" />
 		</Compiler>
-		<Unit filename="ListaComandos">
-			<Option target="&lt;{~None~}&gt;" />
+		<Unit filename="ListaComandos.c">
+			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="comandos.h" />
 		<Unit filename="main.c">
