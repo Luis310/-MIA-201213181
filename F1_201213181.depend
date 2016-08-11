@@ -1,9 +1,8 @@
 # depslib dependency file v1.0
-1470846030 source:/home/luis/Documentos/ProyectosArchivos/F1_201213181/main.c
+1470908056 source:/home/luis/Documentos/ProyectosArchivos/F1_201213181/main.c
 	<stdio.h>
 	<stdlib.h>
 	<string.h>
-	<time.h>
 	"comandos.h"
 
 1470785367 source:/home/luis/Documentos/ProyectosArchivos/F1_201213181/ListaComandos.c
