@@ -62,12 +62,10 @@ char *t=NULL;
 if(lector!=NULL){
 char recibido[300];
 while(fgets(recibido,sizeof(recibido),lector)!=NULL){
+printf("\n");
 fputs(recibido,stdout);
-
-}
-}
-
-t= strtok(cadena,separador);
+printf("\n");
+t= strtok(recibido,separador);
 while(t!=NULL){
 
 int longitud= strlen(t);
@@ -133,7 +131,7 @@ nodocomando= InsertarComando(nodocomando,nuevo);
 
 t = strtok( NULL, separador);
 }
-//ImprimirComandos(nodocomando);
+ImprimirComandos(nodocomando);
 nodoc *aux=nodocomando;
 while(aux!=NULL){
 if(strcasecmp(aux->comando,"mkdisk")==0){
@@ -143,10 +141,17 @@ DiscoDuro();
 aux=aux->siguiente;
 }
 
+nodocomando= IniciarListaComandos(nodocomando);
+
+}
 }
 
-void CrearDiscoDuro(){
+
+
+
+
 }
+
 
 
 void DiscoDuro(){
@@ -162,8 +167,8 @@ nodoc *aux=nodocomando;
 //PRIMER WHILE PARA EL TAMAÑO
 while(aux!=NULL){
 int td;
-strncpy(comparador,aux->comando,7);
-if(strcasecmp(comparador,"-size::")==0){
+strcpy(comparador,substr(aux->comando,1,4));
+if(strcasecmp(comparador,"size")==0){
 printf("YO DOY EL TAMAÑO y es : %s",substr(aux->comando,7,sizeof(aux->comando)));
 strcpy(tama,substr(aux->comando,7,sizeof(aux->comando)));
 }
@@ -172,8 +177,8 @@ aux=aux->siguiente;
 //WHILE PARA ENCONTRAR EL NOMBRE
 aux=nodocomando;
 while(aux!=NULL){
-strncpy(comparador,aux->comando,7);
-if(strcasecmp(comparador,"-name::")==0){
+strcpy(comparador,substr(aux->comando,1,4));
+if(strcasecmp(comparador,"name")==0){
 printf("\n YO DOY EL NOMBRE y es : %s",substr(aux->comando,7,sizeof(aux->comando)));
 strcpy(nombreArchivo,substr(aux->comando,7,sizeof(aux->comando)));
 }
@@ -183,8 +188,8 @@ aux=aux->siguiente;
 //WHILE PARA ENCONTRAR LA PATH
 aux=nodocomando;
 while(aux!=NULL){
-strncpy(comparador,aux->comando,7);
-if(strcasecmp(comparador,"-path::")==0){
+strcpy(comparador,substr(aux->comando,1,4));
+if(strcasecmp(comparador,"path")==0){
 printf("\n YO DOY LA PATH Y ES: %s",substr(aux->comando,7,sizeof(aux->comando)));
 strcpy(pathArchivo,substr(aux->comando,7,sizeof(aux->comando)));
 }
@@ -194,8 +199,8 @@ aux=aux->siguiente;
 //WHILE PARA ENCONTRAR LA UNIDAD
 aux=nodocomando;
 while(aux!=NULL){
-strncpy(comparador,aux->comando,7);
-if(strcasecmp(comparador,"+unit::")==0){
+strcpy(comparador,substr(aux->comando,1,4));
+if(strcasecmp(comparador,"unit")==0){
 printf("\n YO DOY LA UNIDAD Y ES: %s",substr(aux->comando,7,sizeof(aux->comando)));
 strcpy(unidad,substr(aux->comando,7,sizeof(aux->comando)));
 }
