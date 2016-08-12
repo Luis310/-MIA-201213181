@@ -138,8 +138,11 @@ if(strcasecmp(aux->comando,"mkdisk")==0){
 printf("ES UN COMANDO PARA CREAR UN DISCO DURO \n");
 DiscoDuro();
 }else if(strcasecmp(aux->comando,"rmdisk")==0){
-printf("ES UN COMANDO PARA BORRAR UN DISCO DURO");
+printf("ES UN COMANDO PARA BORRAR UN DISCO DURO \n");
 BorrarDiscoDuro();
+}else if(strcasecmp(aux->comando,"fdisk")==0){
+printf("ES UN COMANDO PARA AGREGAR PARTICION \n");
+AdministrarDiscos();
 }
 aux=aux->siguiente;
 }
@@ -155,6 +158,111 @@ nodocomando= IniciarListaComandos(nodocomando);
 
 }
 
+void AdministrarDiscos(){
+FILE *f;
+FILE *file;
+char escritor[1000]="\0";
+char tipo[10];
+char comparador[40];
+char nombreArchivo[50];
+char fit[5];
+char pathArchivo[80];
+char tama[20];
+char unidad[1];
+char eliminar[10];
+char add[10];
+nodoc *aux=nodocomando;
+//PRIMER WHILE PARA EL TAMAÑO
+while(aux!=NULL){
+int td;
+strcpy(comparador,substr(aux->comando,1,4));
+if(strcasecmp(comparador,"size")==0){
+printf("YO DOY EL TAMAÑO y es : %s",substr(aux->comando,7,sizeof(aux->comando)));
+strcpy(tama,substr(aux->comando,7,sizeof(aux->comando)));
+}
+aux=aux->siguiente;
+}
+
+//WHILE PARA LA UNIDAD
+aux=nodocomando;
+while(aux!=NULL){
+strcpy(comparador,substr(aux->comando,1,4));
+if(strcasecmp(comparador,"unit")==0){
+printf("\n YO DOY LA UNIDAD Y ES: %s",substr(aux->comando,7,sizeof(aux->comando)));
+strcpy(unidad,substr(aux->comando,7,sizeof(aux->comando)));
+}
+aux=aux->siguiente;
+}
+
+//WHILE PARA EL PATH
+aux=nodocomando;
+while(aux!=NULL){
+strcpy(comparador,substr(aux->comando,1,4));
+if(strcasecmp(comparador,"path")==0){
+printf("\n YO DOY LA PATH Y ES: %s",substr(aux->comando,7,sizeof(aux->comando)));
+strcpy(pathArchivo,substr(aux->comando,7,sizeof(aux->comando)));
+}
+aux=aux->siguiente;
+}
+
+//WHILE PARA EL TIPO
+aux=nodocomando;
+while(aux!=NULL){
+strcpy(comparador,substr(aux->comando,1,4));
+if(strcasecmp(comparador,"type")==0){
+printf("\n YO DOY EL TIPO Y ES: %s",substr(aux->comando,7,sizeof(aux->comando)));
+strcpy(tipo,substr(aux->comando,7,sizeof(aux->comando)));
+}
+aux=aux->siguiente;
+}
+
+//WHILE PARA EL FIT
+aux=nodocomando;
+while(aux!=NULL){
+strcpy(comparador,substr(aux->comando,1,3));
+if(strcasecmp(comparador,"type")==0){
+printf("\n YO DOY EL FIT Y ES: %s",substr(aux->comando,6,sizeof(aux->comando)));
+strcpy(fit,substr(aux->comando,6,sizeof(aux->comando)));
+}
+aux=aux->siguiente;
+}
+
+//WHILE PARA EL DELETE
+aux=nodocomando;
+while(aux!=NULL){
+strcpy(comparador,substr(aux->comando,1,6));
+if(strcasecmp(comparador,"delete")==0){
+printf("\n YO DOY EL DELETE Y ES: %s",substr(aux->comando,9,sizeof(aux->comando)));
+strcpy(eliminar,substr(aux->comando,9,sizeof(aux->comando)));
+}
+aux=aux->siguiente;
+}
+
+//WHILE PARA ENCONTRAR EL NOMBRE
+aux=nodocomando;
+while(aux!=NULL){
+strcpy(comparador,substr(aux->comando,1,4));
+if(strcasecmp(comparador,"name")==0){
+printf("\n YO DOY EL NOMBRE y es : %s",substr(aux->comando,7,sizeof(aux->comando)));
+strcpy(nombreArchivo,substr(aux->comando,7,sizeof(aux->comando)));
+}
+aux=aux->siguiente;
+}
+
+//WHILE PARA ENCONTRAR EL ADD
+aux=nodocomando;
+while(aux!=NULL){
+strcpy(comparador,substr(aux->comando,1,3));
+if(strcasecmp(comparador,"add")==0){
+printf("\n YO DOY EL NOMBRE y es : %s",substr(aux->comando,6,sizeof(aux->comando)));
+strcpy(add,substr(aux->comando,6,sizeof(aux->comando)));
+}
+aux=aux->siguiente;
+}
+
+
+
+}
 
 void BorrarDiscoDuro(){
 nodoc *aux= nodocomando;
@@ -242,7 +350,7 @@ strcpy(nombreArchivo,sep1);
 char *separador=NULL;
 separador= strtok(pathArchivo,"\"");
 strcpy(pathArchivo,separador);
- mkdir(pathArchivo,0777);
+mkdir(pathArchivo,0777);
 
 
  strcat(pathArchivo,"/");
