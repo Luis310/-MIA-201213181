@@ -1,4 +1,4 @@
-mkDisK -SizE::3000  +unit::K -paTh::"path espacios1" -NaMe::"Disco Con Espacios.dsk"
+mkDisK -SizE::3000  +unit::K -paTh::"/home/luis/prueba1" -NaMe::"Disco Con Espacios.dsk"
 
 
 
@@ -6,5 +6,9 @@ mkDisK -SizE::3000  +unit::K -paTh::"path espacios1" -NaMe::"Disco Con Espacios.
 
 
 
-mkDisK -SizE::10  +unit::m -paTh::"path espacios2" -Name::"Disco2.dsk"
-mkDisK -SizE::1  +unit::k -paTh::"path espacios2" -Name::"Disco3.dsk"
+
+
+mkDisK -SizE::10  +unit::m -paTh::"/home/luis/prueba2" -Name::"Disco2.dsk"
+mkDisK -SizE::1  +unit::k -paTh::"/home/luis/prueba3" -Name::"Disco3.dsk"
+rmDisk -path::"/home/luis/pruebaFinal/Disco2.dsk"
+rmDisk -path::"/home/luis/prueba1/Disco con Espacios.txt"

@@ -137,6 +137,9 @@ while(aux!=NULL){
 if(strcasecmp(aux->comando,"mkdisk")==0){
 printf("ES UN COMANDO PARA CREAR UN DISCO DURO \n");
 DiscoDuro();
+}else if(strcasecmp(aux->comando,"rmdisk")==0){
+printf("ES UN COMANDO PARA BORRAR UN DISCO DURO");
+BorrarDiscoDuro();
 }
 aux=aux->siguiente;
 }
@@ -153,6 +156,29 @@ nodocomando= IniciarListaComandos(nodocomando);
 }
 
 
+void BorrarDiscoDuro(){
+nodoc *aux= nodocomando;
+char pathArchivo[80];
+char comparador[40];
+while(aux!=NULL){
+strcpy(comparador,substr(aux->comando,1,4));
+if(strcasecmp(comparador,"path")==0){
+printf("\n YO DOY LA PATH Y ES: %s",substr(aux->comando,7,sizeof(aux->comando)));
+strcpy(pathArchivo,substr(aux->comando,7,sizeof(aux->comando)));
+}
+aux=aux->siguiente;
+}
+int lpath= strlen(pathArchivo);
+
+char *separador=NULL;
+separador= strtok(pathArchivo,"\"");
+strcpy(pathArchivo,substr(separador,0,strlen(separador)));
+
+printf(" \n %s",pathArchivo);
+
+remove(pathArchivo);
+
+}
 
 void DiscoDuro(){
 FILE *f;
@@ -208,14 +234,21 @@ aux=aux->siguiente;
 }
 
 //QUITANDO LAS COMILLAS AL NOMBRE
-int lnombre= strlen(nombreArchivo);
-if(strcasecmp(substr(nombreArchivo,lnombre-1,1),"\n")==0){
-strcpy(nombreArchivo,substr(nombreArchivo,1,lnombre-3));
-}else{
-strcpy(nombreArchivo,substr(nombreArchivo,1,lnombre-2));
-}
+char *sep1=NULL;
+sep1= strtok(nombreArchivo,"\"");
+strcpy(nombreArchivo,sep1);
 
-f=fopen(nombreArchivo,"wb+");
+//QUITANDO LAS COMILLAS AL PATH PARA HACER EL DIRECTORIO PRIMERO
+char *separador=NULL;
+separador= strtok(pathArchivo,"\"");
+strcpy(pathArchivo,separador);
+ mkdir(pathArchivo,0777);
+
+
+ strcat(pathArchivo,"/");
+ strcat(pathArchivo,nombreArchivo);
+
+f=fopen(pathArchivo,"wb+");
 int c=0;
 int tamArchivo;
 tamArchivo=atoi(tama);

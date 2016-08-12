@@ -1,0 +1,12 @@
+mkDisK -SizE::3000  +unit::K -paTh::"path espacios1" -NaMe::"Disco Con Espacios.dsk"
+
+
+
+
+
+
+
+
+
+mkDisK -SizE::10  +unit::m -paTh::"path espacios2" -Name::"Disco2.dsk"
+mkDisK -SizE::1  +unit::k -paTh::"path espacios2" -Name::"Disco3.dsk"
