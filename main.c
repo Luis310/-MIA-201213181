@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 #include "comandos.h"
 
 time_t t;
@@ -48,14 +49,24 @@ char* substr(char* cadena, int comienzo, int longitud){
 }
 
 void llamada(){
-printf("Ingrese el comando indicado \n");
+//printf("Ingrese el comando indicado \n");
+//fgets(cadena,200,stdin);
+static const char script[]="comandos.txt";
+FILE *lector=fopen(script,"r");
 int i=0;
 int bandera=0;
 char cadena[200];
 char separador[]=" ";
 char path[200]="";
-fgets(cadena,200,stdin);
 char *t=NULL;
+if(lector!=NULL){
+char recibido[300];
+while(fgets(recibido,sizeof(recibido),lector)!=NULL){
+fputs(recibido,stdout);
+
+}
+}
+
 t= strtok(cadena,separador);
 while(t!=NULL){
 
@@ -140,7 +151,8 @@ void CrearDiscoDuro(){
 
 void DiscoDuro(){
 FILE *f;
-char escritor[1024]="\0";
+FILE *file;
+char escritor[1000]="\0";
 char comparador[40];
 char nombreArchivo[50];
 char pathArchivo[80];
@@ -198,22 +210,45 @@ strcpy(nombreArchivo,substr(nombreArchivo,1,lnombre-3));
 strcpy(nombreArchivo,substr(nombreArchivo,1,lnombre-2));
 }
 
-f=fopen(nombreArchivo,"wb");
+f=fopen(nombreArchivo,"wb+");
 int c=0;
 int tamArchivo;
 tamArchivo=atoi(tama);
 
+MBR NuevoDisco;
 if(strcasecmp(unidad,"m\n")==0 || strcasecmp(unidad,"m")==0 || strcasecmp(unidad,"")==0){
-for(c;c<1024*tamArchivo;c++){
+NuevoDisco.mbr_tam=tamArchivo*1000*1000;
+for(c;c<1000*tamArchivo;c++){
 fwrite(escritor,sizeof(escritor),1,f);
 }
-fclose (f);
+//fclose (f);
 }else if(strcasecmp(unidad,"k\n")==0 || strcasecmp(unidad,"k")==0){
+NuevoDisco.mbr_tam=tamArchivo*1000;
 for(c;c<tamArchivo;c++){
 fwrite(escritor,sizeof(escritor),1,f);
 }
-fclose (f);
+//fclose (f);
 }
+//file=fopen(nombreArchivo,"wbr+");
+int numero;
+numero = rand () % 50 + 1;
+NuevoDisco.numDisco=numero;
+time_t tiempo = time(0);
+struct tm *tlocal = localtime(&tiempo);
+char output[100];
+strftime(output,100,"%d/%m/%y %H:%M:%S",tlocal);
+
+strcpy(NuevoDisco.p1.estado,"0");
+strcpy(NuevoDisco.p2.estado,"0");
+strcpy(NuevoDisco.p3.estado,"0");
+strcpy(NuevoDisco.p4.estado,"0");
+
+strcpy(NuevoDisco.tiempo,output);
+
+
+fseek(f,0,SEEK_SET);
+fwrite(&NuevoDisco,sizeof(MBR),1,f);
+fclose(f);
 //printf("\n %d",td);
 //printf("\n %s",nombreArchivo);
 }
@@ -222,6 +257,7 @@ fclose (f);
 
 int main()
 {
+
     nodocomando= IniciarListaComandos(nodocomando);
     llamada();
 
