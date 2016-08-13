@@ -1,4 +1,4 @@
-mkDisK -SizE::3000  +unit::K -paTh::"/home/luis/prueba3" -NaMe::"particion2.dsk"
+mkDisK -SizE::3000  +unit::k -paTh::"/home/luis/prueba3" -NaMe::"disco1.dsk"
 
 
 
@@ -12,4 +12,7 @@ mkDisK -SizE::10  +unit::m -paTh::"/home/luis/prueba2" -Name::"Disco2.dsk"
 mkDisK -SizE::1  +unit::k -paTh::"/home/luis/prueba3" -Name::"Disco3.dsk"
 rmDisk -path::"/home/luis/pruebaFinal/Disco2.dsk"
 rmDisk -path::"/home/luis/prueba1/Disco con Espacios.txt"
-fdisk -Size::3 -path::"/home/luis/prueba3/Disco3.dsk" -name::"particion1"
+fdisk -Size::3 -path::"/home/luis/prueba3/disco1.dsk" -name::"particion1"
+fdisk -Size::9 -path::"/home/luis/prueba3/disco1.dsk" -name::"particion2"
+fdisk -Size::900 -path::"/home/luis/prueba3/disco1.dsk" -name::"particion3"
+fdisk -Size::1000 -path::"/home/luis/prueba3/disco1.dsk" -name::"particion4"

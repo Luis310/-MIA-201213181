@@ -286,7 +286,6 @@ int disponibles=0;
 MBR mbr_aux;
 fread(&mbr_aux,sizeof(MBR),1,fr2);
 printf("\n El disco fue creado en la fecha: %s", mbr_aux.tiempo);
-printf("\n EL ESTADO DE LA PRIMERA PARTICION ES: %s", mbr_aux.p1.estado);
 
 if(strcasecmp(mbr_aux.p1.estado,"0")==0){
     disponibles=disponibles+1;
@@ -318,11 +317,17 @@ mbr_aux.p1.tam=tparticion;
 }
 int tpivote=mbr_aux.mbr_tam-sizeof(MBR);
 //VERIFICO EL TAMAÑO SI NO SOBREPASA AL DISCO
-if(tparticion<tpivote){
+if(tparticion<=tpivote){
 strcpy(mbr_aux.p1.estado,"1");
 if(strcasecmp(fit,"")==0){
 strcpy(fit,"WF");
 }
+
+printf("\n EL ESTADO DE LA PRIMERA PARTICION ES: %s", mbr_aux.p1.estado);
+printf("\n EL ESTADO DE LA SEGUNDA PARTICION ES: %s", mbr_aux.p2.estado);
+printf("\n EL ESTADO DE LA TERCERA PARTICION ES: %s", mbr_aux.p3.estado);
+printf("\n EL ESTADO DE LA CUARTA PARTICION ES: %s", mbr_aux.p4.estado);
+
 strcpy(mbr_aux.p1.fit,fit);
 mbr_aux.p1.inicio=sizeof(MBR);
 strcpy(mbr_aux.p1.nombre,nombreArchivo);
@@ -337,8 +342,131 @@ fwrite(&mbr_aux.p1,sizeof(particion),1,fr2);
 
 fclose(fr2);
 }else{
-printf("\n LA PARTICION ES MAYOR QUE EL TAMAÑO DEL DISCO");
+printf("\nLA PARTICION SOBREPASA EL TAMAÑO DEL ARCHIVO, VERIFIQUE");
 }
+}else if(disponibles==3){
+
+if(strcasecmp(unidad,"B")==0) {
+mbr_aux.p2.tam=tparticion;
+}else if(strcasecmp(unidad,"K")==0 || strcasecmp(unidad,"")==0){
+tparticion=tparticion*1000;
+mbr_aux.p2.tam=tparticion;
+}else if(strcasecmp(unidad,"M")==0){
+tparticion=tparticion*1000*1000;
+mbr_aux.p2.tam=tparticion;
+}
+
+int tpivote=mbr_aux.mbr_tam-(sizeof(MBR)+mbr_aux.p1.tam);
+//VERIFICO EL TAMAÑO SI NO SOBREPASA AL DISCO
+if(tparticion<=tpivote){
+strcpy(mbr_aux.p2.estado,"1");
+if(strcasecmp(fit,"")==0){
+strcpy(fit,"WF");
+}
+
+printf("\n EL ESTADO DE LA PRIMERA PARTICION ES: %s", mbr_aux.p1.estado);
+printf("\n EL ESTADO DE LA SEGUNDA PARTICION ES: %s", mbr_aux.p2.estado);
+printf("\n EL ESTADO DE LA TERCERA PARTICION ES: %s", mbr_aux.p3.estado);
+printf("\n EL ESTADO DE LA CUARTA PARTICION ES: %s", mbr_aux.p4.estado);
+
+strcpy(mbr_aux.p2.fit,fit);
+mbr_aux.p2.inicio=sizeof(MBR)+mbr_aux.p1.tam;
+strcpy(mbr_aux.p2.nombre,nombreArchivo);
+strcpy(mbr_aux.p2.tipo,tipo);
+
+fseek(fr2,0,SEEK_SET);
+fwrite(&mbr_aux,sizeof(MBR),1,fr2);
+
+fseek(fr2,mbr_aux.p1.tam+mbr_aux.p2.tam+sizeof(MBR),SEEK_SET);
+fwrite(&mbr_aux.p2,sizeof(particion),1,fr2);
+
+fclose(fr2);
+
+}else{
+printf("LA PARTICION SOBREPASA EL TAMAÑO DEL ARCHIVO, VERIFIQUE");
+}
+}else if(disponibles==2){
+if(strcasecmp(unidad,"B")==0) {
+mbr_aux.p3.tam=tparticion;
+}else if(strcasecmp(unidad,"K")==0 || strcasecmp(unidad,"")==0){
+tparticion=tparticion*1000;
+mbr_aux.p3.tam=tparticion;
+}else if(strcasecmp(unidad,"M")==0){
+tparticion=tparticion*1000*1000;
+mbr_aux.p3.tam=tparticion;
+}
+
+int tpivote=mbr_aux.mbr_tam-(sizeof(MBR)+mbr_aux.p1.tam+mbr_aux.p2.tam);
+//VERIFICO EL TAMAÑO SI NO SOBREPASA AL DISCO
+if(tparticion<=tpivote){
+strcpy(mbr_aux.p3.estado,"1");
+if(strcasecmp(fit,"")==0){
+strcpy(fit,"WF");
+}
+
+printf("\n EL ESTADO DE LA PRIMERA PARTICION ES: %s", mbr_aux.p1.estado);
+printf("\n EL ESTADO DE LA SEGUNDA PARTICION ES: %s", mbr_aux.p2.estado);
+printf("\n EL ESTADO DE LA TERCERA PARTICION ES: %s", mbr_aux.p3.estado);
+printf("\n EL ESTADO DE LA CUARTA PARTICION ES: %s", mbr_aux.p4.estado);
+
+strcpy(mbr_aux.p3.fit,fit);
+mbr_aux.p3.inicio=sizeof(MBR)+mbr_aux.p1.tam+mbr_aux.p2.tam;
+strcpy(mbr_aux.p3.nombre,nombreArchivo);
+strcpy(mbr_aux.p3.tipo,tipo);
+
+fseek(fr2,0,SEEK_SET);
+fwrite(&mbr_aux,sizeof(MBR),1,fr2);
+
+fseek(fr2,mbr_aux.p1.tam+mbr_aux.p2.tam+mbr_aux.p3.tam+sizeof(MBR),SEEK_SET);
+fwrite(&mbr_aux.p3,sizeof(particion),1,fr2);
+
+fclose(fr2);
+
+}else{
+printf("LA PARTICION SOBREPASA EL TAMAÑO DEL ARCHIVO, VERIFIQUE");
+}
+}else if(disponibles==1){
+if(strcasecmp(unidad,"B")==0) {
+mbr_aux.p4.tam=tparticion;
+}else if(strcasecmp(unidad,"K")==0 || strcasecmp(unidad,"")==0){
+tparticion=tparticion*1000;
+mbr_aux.p4.tam=tparticion;
+}else if(strcasecmp(unidad,"M")==0){
+tparticion=tparticion*1000*1000;
+mbr_aux.p4.tam=tparticion;
+}
+
+int tpivote=mbr_aux.mbr_tam-(sizeof(MBR)+mbr_aux.p1.tam+mbr_aux.p2.tam+mbr_aux.p3.tam);
+//VERIFICO EL TAMAÑO SI NO SOBREPASA AL DISCO
+if(tparticion<=tpivote){
+strcpy(mbr_aux.p4.estado,"1");
+if(strcasecmp(fit,"")==0){
+strcpy(fit,"WF");
+}
+
+printf("\n EL ESTADO DE LA PRIMERA PARTICION ES: %s", mbr_aux.p1.estado);
+printf("\n EL ESTADO DE LA SEGUNDA PARTICION ES: %s", mbr_aux.p2.estado);
+printf("\n EL ESTADO DE LA TERCERA PARTICION ES: %s", mbr_aux.p3.estado);
+printf("\n EL ESTADO DE LA CUARTA PARTICION ES: %s", mbr_aux.p4.estado);
+
+strcpy(mbr_aux.p4.fit,fit);
+mbr_aux.p4.inicio=sizeof(MBR)+mbr_aux.p1.tam+mbr_aux.p2.tam+mbr_aux.p3.tam;
+strcpy(mbr_aux.p4.nombre,nombreArchivo);
+strcpy(mbr_aux.p4.tipo,tipo);
+
+fseek(fr2,0,SEEK_SET);
+fwrite(&mbr_aux,sizeof(MBR),1,fr2);
+
+fseek(fr2,mbr_aux.p1.tam+mbr_aux.p2.tam+mbr_aux.p3.tam+mbr_aux.p4.tam+sizeof(MBR),SEEK_SET);
+fwrite(&mbr_aux.p4,sizeof(particion),1,fr2);
+
+fclose(fr2);
+
+}else{
+printf("LA PARTICION SOBREPASA EL TAMAÑO DEL ARCHIVO, VERIFIQUE");
+}
+}else{
+printf("\n SE HAN CREADO LAS PARTICIONES PERMITIDAS, NO SE PUEDEN CREAR MAS");
 }
 }
 }
