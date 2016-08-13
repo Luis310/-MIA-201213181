@@ -190,6 +190,8 @@ strcpy(comparador,substr(aux->comando,1,4));
 if(strcasecmp(comparador,"unit")==0){
 printf("\n YO DOY LA UNIDAD Y ES: %s",substr(aux->comando,7,sizeof(aux->comando)));
 strcpy(unidad,substr(aux->comando,7,sizeof(aux->comando)));
+}else{
+strcpy(unidad,"");
 }
 aux=aux->siguiente;
 }
@@ -260,8 +262,8 @@ strcpy(add,substr(aux->comando,6,sizeof(aux->comando)));
 aux=aux->siguiente;
 }
 //CONVIRTIENDO EL TAMAÑO A INT
-int tArchivo;
-tArchivo=atoi(tama);
+int tparticion;
+tparticion=atoi(tama);
 
 //QUITANDO LAS COMILLAS AL NOMBRE
 char *sep1=NULL;
@@ -284,7 +286,7 @@ int disponibles=0;
 MBR mbr_aux;
 fread(&mbr_aux,sizeof(MBR),1,fr2);
 printf("\n El disco fue creado en la fecha: %s", mbr_aux.tiempo);
-
+printf("\n EL ESTADO DE LA PRIMERA PARTICION ES: %s", mbr_aux.p1.estado);
 
 if(strcasecmp(mbr_aux.p1.estado,"0")==0){
     disponibles=disponibles+1;
@@ -305,6 +307,18 @@ if(strcasecmp(mbr_aux.p4.estado,"0")==0){
 //REVISANDO LA DISPONIBILIDAD
 if(disponibles==4){
 //SIGINIFICA QUE NO HAY PARTICIONES EN EL DISCO
+if(strcasecmp(unidad,"B")==0) {
+mbr_aux.p1.tam=tparticion;
+}else if(strcasecmp(unidad,"K")==0 || strcasecmp(unidad,"")==0){
+tparticion=tparticion*1000;
+mbr_aux.p1.tam=tparticion;
+}else if(strcasecmp(unidad,"M")==0){
+tparticion=tparticion*1000*1000;
+mbr_aux.p1.tam=tparticion;
+}
+int tpivote=mbr_aux.mbr_tam-sizeof(MBR);
+//VERIFICO EL TAMAÑO SI NO SOBREPASA AL DISCO
+if(tparticion<tpivote){
 strcpy(mbr_aux.p1.estado,"1");
 if(strcasecmp(fit,"")==0){
 strcpy(fit,"WF");
@@ -312,25 +326,21 @@ strcpy(fit,"WF");
 strcpy(mbr_aux.p1.fit,fit);
 mbr_aux.p1.inicio=sizeof(MBR);
 strcpy(mbr_aux.p1.nombre,nombreArchivo);
-if(strcasecmp(unidad,"B")==0) {
-mbr_aux.p1.tam=tArchivo;
-}else if(strcasecmp(unidad,"K")==0 || strcasecmp(unidad,"")==0){
-mbr_aux.p1.tam=tArchivo*1000;
-}else if(strcasecmp(unidad,"M")==0){
-mbr_aux.p1.tam=tArchivo*1000*1000;
-}
 strcpy(mbr_aux.p1.tipo,tipo);
 
 //FILE *escritor2= fopen(pathArchivo,"wb+");
 fseek(fr2,0,SEEK_SET);
 fwrite(&mbr_aux,sizeof(MBR),1,fr2);
+
+fseek(fr2,mbr_aux.p1.tam+sizeof(MBR),SEEK_SET);
+fwrite(&mbr_aux.p1,sizeof(particion),1,fr2);
+
 fclose(fr2);
+}else{
+printf("\n LA PARTICION ES MAYOR QUE EL TAMAÑO DEL DISCO");
 }
-
-
 }
-
-
+}
 }
 
 void BorrarDiscoDuro(){
