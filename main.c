@@ -259,7 +259,76 @@ strcpy(add,substr(aux->comando,6,sizeof(aux->comando)));
 }
 aux=aux->siguiente;
 }
+//CONVIRTIENDO EL TAMAÑO A INT
+int tArchivo;
+tArchivo=atoi(tama);
 
+//QUITANDO LAS COMILLAS AL NOMBRE
+char *sep1=NULL;
+sep1= strtok(nombreArchivo,"\"");
+strcpy(nombreArchivo,sep1);
+
+//QUITANDO LAS COMILLAS AL PATH PARA HACER EL DIRECTORIO PRIMERO
+char *separador=NULL;
+separador= strtok(pathArchivo,"\"");
+strcpy(pathArchivo,separador);
+
+
+FILE *fr2= fopen(pathArchivo,"rb+");
+
+if(fr2==NULL){
+printf("\n NO SE PUEDE ACCEDER AL ARCHIVO");
+}else{
+
+int disponibles=0;
+MBR mbr_aux;
+fread(&mbr_aux,sizeof(MBR),1,fr2);
+printf("\n El disco fue creado en la fecha: %s", mbr_aux.tiempo);
+
+
+if(strcasecmp(mbr_aux.p1.estado,"0")==0){
+    disponibles=disponibles+1;
+}
+
+if(strcasecmp(mbr_aux.p2.estado,"0")==0){
+    disponibles=disponibles+1;
+}
+
+if(strcasecmp(mbr_aux.p3.estado,"0")==0){
+    disponibles=disponibles+1;
+}
+
+if(strcasecmp(mbr_aux.p4.estado,"0")==0){
+    disponibles=disponibles+1;
+}
+
+//REVISANDO LA DISPONIBILIDAD
+if(disponibles==4){
+//SIGINIFICA QUE NO HAY PARTICIONES EN EL DISCO
+strcpy(mbr_aux.p1.estado,"1");
+if(strcasecmp(fit,"")==0){
+strcpy(fit,"WF");
+}
+strcpy(mbr_aux.p1.fit,fit);
+mbr_aux.p1.inicio=sizeof(MBR);
+strcpy(mbr_aux.p1.nombre,nombreArchivo);
+if(strcasecmp(unidad,"B")==0) {
+mbr_aux.p1.tam=tArchivo;
+}else if(strcasecmp(unidad,"K")==0 || strcasecmp(unidad,"")==0){
+mbr_aux.p1.tam=tArchivo*1000;
+}else if(strcasecmp(unidad,"M")==0){
+mbr_aux.p1.tam=tArchivo*1000*1000;
+}
+strcpy(mbr_aux.p1.tipo,tipo);
+
+//FILE *escritor2= fopen(pathArchivo,"wb+");
+fseek(fr2,0,SEEK_SET);
+fwrite(&mbr_aux,sizeof(MBR),1,fr2);
+fclose(fr2);
+}
+
+
+}
 
 
 }
